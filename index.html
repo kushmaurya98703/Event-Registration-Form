@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Event Registration</h2>
+        <form id="eventForm">
+            <div class="form-group">
+                <label>Would you be attending the XYZ event?</label>
+                <div class="attend">
+                    <input type="radio" id="yes" name="attending" value="Yes" required>
+                    <label for="yes" class="radio-label">Yes</label>
+                    <input type="radio" id="no" name="attending" value="No">
+                    <label for="no" class="radio-label">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="required">Name</label>
+                <div class="name-group">
+                    <input type="text" id="firstName" placeholder="First" required>
+                    <input type="text" id="lastName" placeholder="Last" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label class="required">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+            </div>
+            <div class="form-group">
+                <label>How many guests are you bringing?</label>
+                <input type="number" id="guests" placeholder="Number of guests" min="0">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
