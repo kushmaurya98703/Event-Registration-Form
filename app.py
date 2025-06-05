@@ -52,7 +52,14 @@ def register():
         db_cursor.execute(insert_query, values)
         mydb.commit()
 
-        return jsonify({'message': 'Registration successful'}), 200
+        # Get the last inserted ID (registration ID)
+        db_cursor.execute("SELECT LAST_INSERT_ID()")
+        registration_id = db_cursor.fetchone()[0]
+
+        return jsonify({
+            'message': 'Registration successful',
+            'registration_id': registration_id
+        }), 200
 
     except Exception as e:
         mydb.rollback()

@@ -6,28 +6,21 @@ body {
             align-items: center;
             height: 100vh;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #73737a, #000000);
+            background: linear-gradient(135deg, #6e48aa, #9b59b6);
             color: #fff;
         }
         .container {
-            background: transparent;
-            /* background: #fff; */
-            padding: 50px;
-            border: 2px solid red;
+            background: #fff;
+            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 700px;
+            width: 400px;
             color: #333;
         }
         h2 {
-            font-size: 40px;
-            padding-bottom: 30px;
             text-align: center;
-            color: #37b333;
+            color: #6e48aa;
             margin-bottom: 20px;
-        }
-        .attend{
-            display: flex;
         }
         .form-group {
             margin-bottom: 15px;
@@ -65,7 +58,7 @@ body {
         button {
             width: 100%;
             padding: 10px;
-            background-color: #12a0b3;
+            background-color: #6e48aa;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -79,4 +72,15 @@ body {
             content: "*";
             color: red;
             margin-left: 5px;
+        }
+        #qrCodeSection {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #qrCodeSection h3 {
+            color: #6e48aa;
+            margin-bottom: 10px;
+        }
+        #qrCode {
+            margin: 0 auto;
         }

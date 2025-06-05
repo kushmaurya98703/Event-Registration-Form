@@ -1,0 +1,255 @@
+html
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Event Registration</h2>
+        <form id="eventForm">
+            <div class="form-group">
+                <label>Would you be attending the XYZ event?</label>
+                <div class="attend">
+                    <input type="radio" id="yes" name="attending" value="Yes" required>
+                    <label for="yes" class="radio-label">Yes</label>
+                    <input type="radio" id="no" name="attending" value="No">
+                    <label for="no" class="radio-label">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="required">Name</label>
+                <div class="name-group">
+                    <input type="text" id="firstName" placeholder="First" required>
+                    <input type="text" id="lastName" placeholder="Last" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label class="required">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+            </div>
+            <div class="form-group">
+                <label>How many guests are you bringing?</label>
+                <input type="number" id="guests" placeholder="Number of guests" min="0">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+css
+
+
+body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #73737a, #000000);
+            color: #fff;
+        }
+        .container {
+            background: transparent;
+            /* background: #fff; */
+            padding: 50px;
+            border: 2px solid red;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 700px;
+            color: #333;
+        }
+        h2 {
+            font-size: 40px;
+            padding-bottom: 30px;
+            text-align: center;
+            color: #37b333;
+            margin-bottom: 20px;
+        }
+        .attend{
+            display: flex;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #6e48aa;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+        .form-group .radio-label {
+            font-weight: normal;
+            color: #333;
+        }
+        .name-group {
+            display: flex;
+            gap: 10px;
+        }
+        .name-group input {
+            flex: 1;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #12a0b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #9b59b6;
+        }
+        .required::after {
+            content: "*";
+            color: red;
+            margin-left: 5px;
+        }
+
+
+
+
+
+
+
+js
+
+
+
+document.getElementById('eventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                attending: document.querySelector('input[name="attending"]:checked')?.value || '',
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                guests: document.getElementById('guests').value || 0
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Registration successful!');
+                    document.getElementById('eventForm').reset();
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error submitting form: ' + error.message);
+            }
+        });
+
+
+
+
+
+
+
+app.py
+
+from flask import Flask, request, jsonify
+import mysql.connector as MyConn
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS to allow frontend requests
+
+# Database connection
+mydb = MyConn.connect(
+    host="localhost",
+    user="sunny",
+    password="maurya17307",
+    database="loginform"
+)
+
+db_cursor = mydb.cursor()
+
+# Create table for event registrations
+db_cursor.execute("""
+    CREATE TABLE IF NOT EXISTS EventRegistrations (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        attending VARCHAR(3),
+        first_name VARCHAR(50),
+        last_name VARCHAR(50),
+        email VARCHAR(100),
+        phone VARCHAR(15),
+        guests INT
+    )
+""")
+
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        data = request.get_json()
+        attending = data.get('attending')
+        first_name = data.get('firstName')
+        last_name = data.get('lastName')
+        email = data.get('email')
+        phone = data.get('phone')
+        guests = int(data.get('guests', 0))
+
+        # Validate required fields
+        if not attending or not first_name or not last_name or not phone:
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        # Insert data into the table
+        insert_query = """
+            INSERT INTO EventRegistrations (attending, first_name, last_name, email, phone, guests)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        values = (attending, first_name, last_name, email, phone, guests)
+        db_cursor.execute(insert_query, values)
+        mydb.commit()
+
+        return jsonify({'message': 'Registration successful'}), 200
+
+    except Exception as e:
+        mydb.rollback()
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
